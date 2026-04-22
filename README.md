@@ -1,108 +1,147 @@
 # Organizador de Diretório por Extensão
 
-Um automação de arquivos que organiza e monitora um diretório local, movendo arquivos para pastas por extensão e mantendo o diretório sempre limpo.
+Uma automação de arquivos que organiza e monitora um diretório local, movendo arquivos para pastas por extensão e mantendo o diretório sempre limpo.
 
 ---
 
-## Descrição
+## 📝 Descrição
 
 Este projeto implementa uma aplicação Python que:  
-- organiza arquivos dentro de um diretório definido por extensão;  
-- cria pastas automaticamente para cada tipo de arquivo;  
-- detecta novos arquivos criados no diretório e reorganiza automaticamente.
+- Organiza arquivos dentro de um diretório definido por extensão;  
+- Cria pastas automaticamente para cada tipo de arquivo;  
+- Detecta novos arquivos criados no diretório e reorganiza automaticamente.
 
 A solução é ideal para manter pastas de download, desktop ou qualquer diretório de trabalho organizado sem intervenção manual.
 
 ---
 
-## Tecnologias / Ferramentas
+## 🛠 Tecnologias / Ferramentas
 
-- Python 3.10+  
-- watchdog  
-- python-dotenv  
-- shutil  
-- pathlib / os  
-
----
-
-## Sobre a arquitetura e padrões
-
-O projeto está organizado em camadas claras para separar responsabilidades:  
-- `app/application` — caso de uso principal (`ExecuteAutomationFileUseCase`) que orquestra a inicialização e o monitoramento.  
-- `app/domain` — contratos (interfaces/abstrações) usados pela aplicação; define as portas do sistema.  
-- `app/infrastructure` — implementações concretas de organização de diretório e monitoramento de eventos.
-
-Padrões e princípios aplicados:  
-- `Dependency Inversion` — o `UseCase` depende de abstrações em vez de implementações diretas.  
-- `Ports and Adapters` — a camada de domínio define interfaces e a infraestrutura fornece as adaptações reais.  
-- `Event-driven` — o diretório é observado por eventos (`watchdog`) e toda vez que um arquivo é criado, a organização é acionada.
+- Python 3.12+  
+- [watchdog](https://pypi.org/project/watchdog/) (Monitoramento de eventos de sistema)
+- [python-dotenv](https://pypi.org/project/python-dotenv/) (Gerenciamento de variáveis de ambiente)
+- [PyInstaller](https://pyinstaller.org/) (Criação de executáveis)
+- Shutil / Pathlib (Manipulação de arquivos e caminhos)
 
 ---
 
-## Como utilizar
+## 🏛 Arquitetura e Padrões
 
-1. Clone o repositório:
-
-```bash
-git clone <URL_DO_REPOSITORIO>
-cd _PYTHON
-```
-
-2. Crie e ative um ambiente virtual (recomendado):
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-```
-
-3. Instale as dependências:
-
-```bash
-pip install watchdog python-dotenv
-```
-
-4. Crie um arquivo `.env` na raiz do projeto com o caminho do diretório que será monitorado:
-
-```env
-CAMINHO_DIRETORIO=/caminho/para/seu/diretorio
-```
-
-5. Execute a aplicação:
-
-```bash
-python app/main.py
-```
-
-6. Coloque arquivos dentro do diretório definido em `CAMINHO_DIRETORIO` e observe a organização automática.
+O projeto segue princípios de **Clean Architecture** para separar responsabilidades:  
+- `app/application` — Caso de uso principal (`ExecuteAutomationFileUseCase`) que orquestra a inicialização.  
+- `app/domain` — Interfaces e abstrações (Portas).  
+- `app/infrastructure` — Implementações concretas (Adaptadores) para organização e serviços de monitoramento.
+- `run.py` — Ponto de entrada (Entry Point) para garantir a resolução correta de caminhos no ambiente de produção.
 
 ---
 
-## O que a aplicação organiza
+## 🚀 Como utilizar (Desenvolvimento)
 
-- arquivos de imagem são movidos para a pasta `IMAGENS` (PNG, JPEG, SVG, JPG, GIF)  
-- arquivos com outras extensões são movidos para pastas nomeadas pela extensão (por exemplo, `PDF`, `TXT`, `MP3`)  
-- arquivos sem extensão são movidos para a pasta `OUTROS`
+1. **Clone o repositório:**
+   ```bash
+   git clone [https://github.com/Thurzinfs/seu-repositorio.git](https://github.com/Thurzinfs/seu-repositorio.git)
+   cd _PYTHON
+   ```
+
+2. **Crie e ative um ambiente virtual:**
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate
+   ```
+
+3. **Instale as dependências:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Configure as variáveis de ambiente:**
+   Crie um arquivo `.env` na raiz do projeto:
+   ```
+   CAMINHO_DIRETORIO=/home/usuario/Downloads
+   ```
+
+5. **Execute a aplicação:**
+   ```bash
+   python run.py
+   ```
 
 ---
 
-## Estrutura do projeto
+## 📦 Empacotamento e Automação (Linux)
 
-- `app/main.py` — ponto de entrada da aplicação.  
-- `app/application/use_case.py` — caso de uso principal que inicializa o observador.  
-- `app/domain/repositories.py` — contratos de abstração para o organizador e o monitor.  
-- `app/infrastructure/repository.py` — lógica de organização e movimentação de arquivos.  
-- `app/infrastructure/services.py` — monitoramento de criação de arquivos e disparo da organização.
+Para que a automação rode como um serviço do sistema que inicia automaticamente com o computador, siga os passos abaixo:
+
+### 1. Gerar o executável nativo
+
+Com o ambiente virtual ativo, gere o binário:
+
+```bash
+pyinstaller --noconfirm --onedir --name "Orquestrador de Diretorio" --paths ./app run.py
+```
+
+O resultado estará disponível na pasta `dist/Orquestrador de Diretorio`.
+
+### 2. Configurar como Serviço do Sistema (Systemd)
+
+Crie um arquivo de configuração para o sistema:
+
+```bash
+sudo nano /etc/systemd/system/automacao.service
+```
+
+Cole o conteúdo abaixo (ajustando o campo User e os caminhos):
+
+```ini
+[Unit]
+Description=Servico de Automacao Python
+After=network.target
+
+[Service]
+User=seu_usuario_linux
+WorkingDirectory=/home/seu_usuario/Documentos/ESTUDO/_PYTHON/dist/Orquestrador de Diretorio
+ExecStart="/home/seu_usuario/Documentos/ESTUDO/_PYTHON/dist/Orquestrador de Diretorio/Orquestrador de Diretorio"
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+```
+
+### 3. Ativar e Monitorar
+
+```bash
+## Recarregar as configurações
+sudo systemctl daemon-reload
+
+## Habilitar para iniciar com o sistema
+sudo systemctl enable automacao.service
+
+## Iniciar agora
+sudo systemctl start automacao.service
+
+## Verificar status e logs
+sudo systemctl status automacao.service
+journalctl -u automacao.service -f
+```
+
+---
+
+## 📁 Estrutura de Pastas Organizadas
+
+- **IMAGENS**: PNG, JPEG, SVG, JPG, GIF.
+- **OUTROS**: Arquivos sem extensão detectada.
+- **EXTENSÃO**: Pastas criadas dinamicamente (Ex: PDF, TXT, MP3).
 
 ---
 
 ## 📞 Contato
 
-- **Autor** — Arthur França Silva
-- **E-mail** — arthurfranca.dev@gmail.com
-- **GitHub** — [@Thurzinfs](https://github.com/Thurzinfs)
+**Autor** — Arthur França Silva
 
----
+**E-mail** — arthurfranca.dev@gmail.com
+
+**GitHub** — @Thurzinfs
 
 <div align="center">
-  Desenvolvido com ❤️ por <a href="https://github.com/Thurzinfs">Arthur França Silva</a>
+Desenvolvido com ❤️ por <a href="https://github.com/Thurzinfs">Arthur França Silva</a>
 </div>
