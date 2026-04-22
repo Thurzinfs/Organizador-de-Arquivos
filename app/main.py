@@ -1,6 +1,6 @@
-from app.application.use_case import ExecuteAutomationFileUseCase
-from app.infrastructure.repository import OrganizadorDiretorio
-from app.infrastructure.services import MonitoradorDiretorio
+from application.use_case import ExecuteAutomationFileUseCase
+from infrastructure.repository import OrganizadorDiretorio
+from infrastructure.services import MonitoradorDiretorio
 
 
 use_case = ExecuteAutomationFileUseCase(

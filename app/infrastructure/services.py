@@ -3,7 +3,7 @@ from watchdog.events import (
     FileCreatedEvent,
 )
 
-from app.domain.repositories import (
+from domain.repositories import (
     IOrganizadorDiretorio,
     IServiceMonitoramento,
 )

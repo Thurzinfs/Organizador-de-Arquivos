@@ -2,7 +2,7 @@ import os
 
 import shutil
 
-from app.domain.repositories import IOrganizadorDiretorio
+from domain.repositories import IOrganizadorDiretorio
 
 from dotenv import load_dotenv
 

@@ -53,3 +53,7 @@ Thumbs.db
 
 # Watchdog or runtime artifacts
 *.swp
+
+build/
+dist/
+*.spec
